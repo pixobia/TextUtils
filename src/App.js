@@ -1,28 +1,55 @@
+import { useState } from 'react';
 import './App.css';
+import Navbar from './components/Navbar';
+import TextForm from './components/TextForm';
+import About from './components/About';
+import Alret from './components/Alret';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom";
+
 
 function App() {
+  const [mode , setMode] = useState('light')
+  const [alret,setAlret] = useState(null)
+
+  const showAlret = (message,type) =>{
+    setAlret({
+        msg:message,
+        type:type
+    })
+    setTimeout(() => {
+      setAlret(null)
+    }, 1500);
+  }
+
+  const toggleMode = () => {
+    if(mode==='light'){
+      setMode('dark')
+      document.body.style.backgroundColor = 'grey'
+      showAlret('Dark Mode Enableded','success')
+    }else{
+      setMode('light')
+      document.body.style.backgroundColor = 'white'
+      showAlret('Light Mode Enableded','success')
+    }
+   
+  }
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-    <a className="navbar-brand" href="/">Pixobia</a>
-    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"></span>
-    </button>
-  
-    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav mr-auto">
-        <li className="nav-item active">
-          <a className="nav-link" href="/">Home <span className="sr-only">(current)</span></a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="/">About</a>
-        </li>
-      </ul>
-      <form className="form-inline my-2 my-lg-0">
-        <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-        <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
-    </div>
-  </nav>
+    <>
+    <Router>
+     <Navbar title= "pixobia" aboutText='AboutUs' mode={mode} toggleMode = {toggleMode} showAlret = {showAlret}  />
+     <Alret alret = {alret}/>
+     <div className="container my-3">
+       <Routes>
+          <Route exact path="/about" element = {<About />} />
+          <Route  exact path="/" element = {<TextForm title="Enter Text to Analyze here" mode = {mode} showAlret = {showAlret}/> }/>
+        </Routes>
+     </div>
+     </Router>
+    </>
   );
 }
 
